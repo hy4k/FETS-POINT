@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FETS POINT - Command Center</title>
+    <meta name="description" content="Professional FETS management system - Mobile-optimized operational command center" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#14b8a6" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="FETS Point" />
+    
+    <!-- iOS Specific -->
+    <link rel="apple-touch-icon" href="/fets-point-logo.png" />
+    <link rel="apple-touch-startup-image" href="/fets-point-logo.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/fets-point-logo.png" as="image" />
+    <script type="module" crossorigin src="/assets/index-OcL_50U2.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DWzzJOSK.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- PWA Install Prompt -->
+    <div id="pwa-install-prompt" style="display: none; position: fixed; bottom: 20px; left: 20px; right: 20px; background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="flex: 1;">
+          <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">Install FETS Point</h3>
+          <p style="margin: 0; color: #666; font-size: 14px;">Add to your home screen for a native app experience</p>
+        </div>
+        <div style="display: flex; gap: 8px; margin-left: 16px;">
+          <button id="pwa-install-dismiss" style="padding: 8px 12px; background: #f3f4f6; border: none; border-radius: 6px; cursor: pointer;">Later</button>
+          <button id="pwa-install-accept" style="padding: 8px 12px; background: #14b8a6; color: white; border: none; border-radius: 6px; cursor: pointer;">Install</button>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- Service Worker Registration -->
+    <script>
+      // Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('✅ SW registered successfully:', registration.scope);
+              
+              // Check for updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      // New version available
+                      if (confirm('New version available! Reload to update?')) {
+                        window.location.reload();
+                      }
+                    }
+                  });
+                }
+              });
+            })
+            .catch((error) => {
+              console.error('❌ SW registration failed:', error);
+            });
+        });
+      }
+      
+      // PWA Install Prompt
+      let deferredPrompt;
+      const installPrompt = document.getElementById('pwa-install-prompt');
+      const installAccept = document.getElementById('pwa-install-accept');
+      const installDismiss = document.getElementById('pwa-install-dismiss');
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('📱 PWA install prompt triggered');
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show custom install prompt after a delay
+        setTimeout(() => {
+          if (!localStorage.getItem('pwa-install-dismissed')) {
+            installPrompt.style.display = 'block';
+          }
+        }, 3000);
+      });
+      
+      installAccept.addEventListener('click', () => {
+        installPrompt.style.display = 'none';
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            console.log('📱 PWA install choice:', choiceResult.outcome);
+            deferredPrompt = null;
+          });
+        }
+      });
+      
+      installDismiss.addEventListener('click', () => {
+        installPrompt.style.display = 'none';
+        localStorage.setItem('pwa-install-dismissed', 'true');
+      });
+      
+      // Handle app installation
+      window.addEventListener('appinstalled', () => {
+        console.log('✅ PWA was installed successfully');
+        installPrompt.style.display = 'none';
+      });
+      
+      // Connection status handling
+      function updateConnectionStatus() {
+        if (navigator.onLine) {
+          document.body.classList.remove('offline');
+        } else {
+          document.body.classList.add('offline');
+        }
+      }
+      
+      window.addEventListener('online', updateConnectionStatus);
+      window.addEventListener('offline', updateConnectionStatus);
+      updateConnectionStatus();
+    </script>
+  </body>
+</html>
