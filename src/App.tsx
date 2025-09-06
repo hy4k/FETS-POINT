@@ -9,6 +9,7 @@ import { supabase } from './lib/supabase'
 import { useIsMobile, useScreenSize } from './hooks/use-mobile'
 
 // Import all page components
+import { MobileBottomNav } from './components/MobileBottomNav'
 import { CandidateTracker } from './components/CandidateTracker'
 import { MyDesk } from './components/MyDesk'
 import { StaffManagement } from './components/StaffManagement'
@@ -196,34 +197,7 @@ function AppContent() {
   )
 }
 
-// Mobile Bottom Navigation Component
-function MobileBottomNav({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) {
-  const navigation = [
-    { id: 'command-center', name: 'Dashboard', icon: '🏠' },
-    { id: 'fets-roster', name: 'Roster', icon: '👥' },
-    { id: 'fets-calendar', name: 'Calendar', icon: '📅' },
-    { id: 'staff-management', name: 'Staff', icon: '👤' }
-  ]
-
-  return (
-    <div className="flex items-center justify-around py-2 px-1 bg-white border-t border-gray-200">
-      {navigation.map((item) => (
-        <button
-          key={item.id}
-          onClick={() => setActiveTab(item.id)}
-          className={`flex flex-col items-center justify-center p-2 rounded-lg min-h-[44px] flex-1 transition-colors ${
-            activeTab === item.id
-              ? 'text-yellow-600 bg-yellow-50'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
-        >
-          <span className="text-lg mb-1">{item.icon}</span>
-          <span className="text-xs font-medium">{item.name}</span>
-        </button>
-      ))}
-    </div>
-  )
-}
+import { MobileBottomNav } from './components/MobileBottomNav'
 
 function App() {
   return (

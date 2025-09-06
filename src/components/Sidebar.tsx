@@ -1,17 +1,9 @@
 import { 
-  Users, 
-  UserCog,
-  Settings,
-  Calendar,
-  UserCheck,
   ChevronRight,
   ChevronLeft,
-  X,
-  AlertTriangle,
-  CheckCircle,
-  Home,
-  Vault
+  X
 } from 'lucide-react'
+import { navigationGroups, NavigationItem } from '../lib/navigation'
 
 interface SidebarProps {
   activeTab: string
@@ -20,33 +12,6 @@ interface SidebarProps {
   onClose?: () => void
   isCollapsed?: boolean
   setIsCollapsed?: (collapsed: boolean) => void
-}
-
-interface NavigationItem {
-  id: string
-  name: string
-  icon: any
-  badge?: string | number
-  group?: string
-}
-
-// NAVIGATION STRUCTURE - EXACTLY MATCHING REFERENCE IMAGE
-const navigationGroups = {
-  operations: [
-    { id: 'command-center', name: 'Command Centre', icon: Home, badge: 'Home' },
-    { id: 'candidate-tracker', name: 'Candidate Tracker', icon: Users },
-    { id: 'fets-roster', name: 'FETS Roster', icon: UserCheck, badge: '0' },
-    { id: 'fets-calendar', name: 'FETS Calendar', icon: Calendar },
-  ],
-  compliance: [
-    { id: 'log-incident', name: 'Log Incident', icon: AlertTriangle },
-    { id: 'checklist-management', name: 'Checklist Management', icon: CheckCircle },
-    { id: 'fets-vault', name: 'Resource Centre', icon: Vault },
-  ],
-  admin: [
-    { id: 'staff-management', name: 'User Management', icon: UserCog },
-    { id: 'settings', name: 'Settings', icon: Settings },
-  ]
 }
 
 export function Sidebar({ 
